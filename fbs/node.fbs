@@ -1,0 +1,120 @@
+/*
+* MIT License
+*
+* Copyright (c) 2022 Nora Khayata
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
+//
+// Description of a Computation Node:
+//
+// - Each node has a unique ID which can be used to identify the node inside a circuit.
+//   This ID need not be unique inside a whole module but must be inside a circuit.
+//
+// - To specify the inputs to a node:
+//      - you MUST define the IDs of the input nodes in input_identifiers in the
+//        correct order. If you want to describe the computation 'Node1 - Node2', then input_identifiers contains [1, 2].
+//      - If the input types are not obvious, you MUST specify the input types of each input in input_datatypes.
+//        Otherwise, it can be left empty.
+//      - If you want to refer to a specific output of a node, you MUST specify offsets for each input in input_offset.
+//        E.g. you want to compute 'Node1 - Node2' but Node2 produces 2 outputs, from which you want to chose the second,
+//        input_offsets contains [0, 1]. Note, that if you provide one offset, you have to provide them for all or otherwise it
+//        can lead to ambiguities as to which offset belongs to which input.
+//
+// - To specify the operation that this node computes:
+//      - You MUST set operation to one value of PrimitiveOperation.
+//      - If operation = Custom, you MUST provide the name of the custom operation in custom_op_name, so that
+//        the operation can be deduced at run-time. In that case, you MUST specify input and output data types of this node.
+//      - If operation = CallSubcircuit, you MUST provide the name of the subcircuit in subcircuit_name.
+//      - If operation = Constant, you MUST provide the value of the constant in the payload field.
+//        For more convenient access, this field is organized as a flexbuffer.
+//      - As there is no explicit specification of how to handle nodes with operation = Loop, the use of this operation
+//        is discouraged until there is a specification available.
+//
+// - You MUST specify the number of outputs that this node computes in num_of_outputs.
+//   Note that this number will not be serialized if set to 1 due to flatbuffer not serializing default values.
+//   The output values of the node can be addressed by using this node's ID or by using (this node's ID, offset to correct output)
+//
+// - If the output types of the node are not obvious from the operation and inputs, you MUST specify the output datatypes
+//   for every output of this node.
+//
+// - (Optional) when necessary, you can store additional information in the node_annotations string
+//   if the string has the form "key1 : value1, key2 : value2" you can use getStringValueForAttribute(key)
+//   to get "value" as a string
+
+include "datatype.fbs";
+namespace fuse.core.ir;
+
+enum PrimitiveOperation:byte {
+    Custom,
+
+    And,
+    Xor,
+    Not,
+    Or,
+    Nand,
+    Nor,
+    Xnor,
+
+    Gt,
+    Ge,
+    Lt,
+    Le,
+    Eq,
+
+    Add,
+    Mul,
+    Div,
+    Neg,
+    Sub,
+
+    Loop,
+    CallSubcircuit,
+
+    Split,
+    Merge,
+
+    Input,
+    Output,
+
+    Constant,
+
+    Mux,
+    SelectOffset,
+    Square,
+}
+
+table NodeTable {
+    id:ulong (key);
+
+    input_datatypes:[DataTypeTable];
+    input_identifiers:[ulong];
+    input_offsets:[uint];
+
+    operation:PrimitiveOperation;
+    custom_op_name:string;
+    subcircuit_name:string;
+    payload:[ubyte] (flexbuffer);
+
+    num_of_outputs:uint = 1;
+    output_datatypes:[DataTypeTable];
+
+    node_annotations : string;
+}
+
+root_type NodeTable;

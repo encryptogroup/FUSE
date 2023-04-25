@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: latest
+          platform: x64
+
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.9
+        with:
+          cmake-version: '3.22.x'
+
+      - name: Check cmake version
+        run: cmake --version
+
+      - name: Install FlatBuffers
+        working-directory: ${{ github.workspace }}/extern/flatbuffers
+        run: |
+          mkdir build
+          cmake -B build
+          cmake --build build --parallel 4 --target install
+
+      - name: Compile FUSE
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir build
+          cmake -S . -B build
+          cmake --build build
+
+      - name: Run Tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          pwd
+          cd build/bin
+          ./fusetest
+
+      # - name: Run Benchmarks
+      #   working-directory: ${{ github.workspace }}/build/bin
+      #   run: ./fusebenchmarks --benchmark_format=json | tee ../benchmark_result.json
+
+#      # Download previous benchmark result from cache (if exists)
+#      - name: Download previous benchmark data
+#        uses: actions/cache@v1
+#        with:
+#          path: ./cache
+#          key: ${{ runner.os }}-benchmark
+
+#       - name: Store benchmark result
+# #        uses: benchmark-action/github-action-benchmark@v1
+#         uses: leoholz/github-action-benchmark@v1
+#         with:
+#           name: C++ Benchmark
+#           tool: 'googlecpp'
+#           output-file-path: ${{ github.workspace }}/build/benchmark_result.json
+#           github-token: ${{ secrets.GITHUB_TOKEN }}
+#           auto-push: true
+#           # Show alert with commit comment on detecting possible performance regression
+#           alert-threshold: '200%'
+#           comment-on-alert: true
+#           fail-on-alert: false
+#           gh-pages-branch: gh-pages
+#           benchmark-data-dir-path: dev/bench
+#           save-data-file: true
+
+#          external-data-json-path: ./cache/benchmark-data.json
+#
+#      - name: Commit and Push benchmark result
+#        run: |
+#          git add .
+#          git commit -m "Add benchmark result to github pages"
+#          git push 'https://norakh:${{ secrets.GITHUB_TOKEN }}@github.com/norakh/FUSE.git' gh-pages:gh-pages

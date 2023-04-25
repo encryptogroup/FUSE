@@ -1,11 +1,41 @@
+# Mac OS files
+.DS_STORE
+
+# build directory
+build*/
+cmake-build*
+
+
+# Project settings
+.vscode/
+.idea/
+.clang-format
+
+# deprecated code
+old-src/
+old-tests/
+
+# C++ and Cmake gitignore rules according to GitHub
+# See https://github.com/github/gitignore/blob/master/C%2B%2B.gitignore
 # Prerequisites
 *.d
 
-# Compiled Object files
+# Compiled Object files and Binaries
 *.slo
 *.lo
 *.o
 *.obj
+*.fs
+tests/resources/*.json
+tests/simple_circuits/*.json
+tests/simple_circuits/one_gate/*.json
+tests/simple_circuits/misc/*.json
+tests/outputs
+tests/benchmarks/outputs
+benchmarks/resources
+benchmarks/outputs
+*.fs.z
+*.txt.z
 
 # Precompiled Headers
 *.gch
@@ -30,3 +60,55 @@
 *.exe
 *.out
 *.app
+
+# Cmake files
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+src/core/fuse_ir_fb_headers/
+/mason_packages/
+
+
+# tmp
+tmp
+
+# Python gitignore part, excerpts taken from https://github.com/github/gitignore/blob/main/Python.gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Generated python files from flatbuffers for FUSE
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# env for vscode
+.env
+examples/hycc_circs.zip

@@ -1,0 +1,28 @@
+[submodule "extern/flatbuffers"]
+	path = extern/flatbuffers
+	url = https://github.com/google/flatbuffers.git
+[submodule "extern/MOTION"]
+	path = extern/MOTION
+	url = https://github.com/encryptogroup/MOTION.git
+[submodule "extern/MP-SPDZ"]
+	path = extern/MP-SPDZ
+	url = https://github.com/data61/MP-SPDZ.git
+[submodule "extern/spdlog"]
+	path = extern/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "extern/benchmark"]
+	path = extern/benchmark
+	url = https://github.com/google/benchmark.git
+[submodule "extern/DistGraph"]
+	path = extern/DistGraph
+	url = https://github.com/MoritzHuppert/DistGraph.git
+[submodule "extern/glasgow-subgraph-solver"]
+	path = extern/glasgow-subgraph-solver
+	url = https://github.com/ciaranm/glasgow-subgraph-solver
+[submodule "extern/gzip-hpp"]
+	path = extern/gzip-hpp
+	url = https://github.com/alphamarket/gzip-hpp.git
+[submodule "extern/HyCC"]
+	path = extern/HyCC
+	url = https://gitlab.com/norakh/HyCC.git
+	branch = master

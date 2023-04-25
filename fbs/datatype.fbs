@@ -1,0 +1,74 @@
+/*
+* MIT License
+*
+* Copyright (c) 2022 Nora Khayata
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
+//
+// DataType Description:
+//
+// - primitive_type describes the underlying primitive type of the whole Type
+//
+// - security_level describes whether or not the data is in plaintext form or in some kind of encrypted form.
+//   This can be actual encryption, but can also be used to mark secret shared values
+//
+// - shape can be used to describe tensor shapes similar to TensorFlow's tensor shape.
+//   The empty shape or describes a scalar value,
+//   [2] describes a vector of the given primitive type with 2 elements,
+//   [3, 4] describes a matrix of size 3x4, and so on
+//
+// - (Optional) when necessary, you can store additional information in the data_type_annotations string
+//   if the string has the form "key1 : value1, key2 : value2" you can use getStringValueForAttribute(key)
+//   to get "value" as a string
+
+namespace fuse.core.ir;
+
+enum PrimitiveType:byte {
+    /*
+    * Types that are natively supported by Flatbuffers
+    */
+    Bool,
+    Int8,
+    Int16,
+    Int32,
+    Int64,
+    UInt8,
+    UInt16,
+    UInt32,
+    UInt64,
+    Float,
+    Double
+}
+
+enum SecurityLevel:byte {
+    Secure,
+    Plaintext
+}
+
+table DataTypeTable {
+    primitive_type:PrimitiveType;
+
+    security_level:SecurityLevel;
+
+    shape:[long];
+
+    data_type_annotations : string;
+}
+
+root_type DataTypeTable;
