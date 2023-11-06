@@ -1,3 +1,14 @@
+### Citing this work
+The design of FUSE is presented in this [paper](https://eprint.iacr.org/2023/563). If you want to use FUSE for your academic projects, please cite
+```
+@inproceedings{fuse,
+    author = {Lennart Braun and Moritz Huppert and Nora Khayata and Thomas Schneider and Oleksandr Tkachenko},
+    title = {{FUSE} -- {F}lexible File Format and Intermediate Representation for Secure Multi-Party Computation},
+    booktitle = {AsiaCCS},
+    year = {2023},
+}
+```
+
 ### Repository Structure
 * `.github/workflows`: Contains configuration of Continuous Integration (CI) pipeline
 * `extern`: Other Repositories used in this implementation, currently consisting of:
@@ -71,17 +82,6 @@ If you want to run the Developer Tutorial:
 ```
 cd build/bin
 ./fuse_dev_tutorial
-```
-
-### Citing this work
-The design of FUSE is presented in this [paper](https://eprint.iacr.org/2023/563). If you want to use FUSE for your academic projects, please cite
-```
-@inproceedings{fuse,
-    author = {Lennart Braun and Moritz Huppert and Nora Khayata and Thomas Schneider and Oleksandr Tkachenko},
-    title = {{FUSE} -- {F}lexible File Format and Intermediate Representation for Secure Multi-Party Computation},
-    booktitle = {AsiaCCS},
-    year = {2023},
-}
 ```
 
 ### Example Circuits
