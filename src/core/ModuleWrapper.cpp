@@ -728,7 +728,7 @@ CircuitBufferWrapper::Node CircuitBufferWrapper::getNodeWithID(uint64_t nodeID) 
             return std::make_unique<NodeBufferWrapper>(*it);
         }
     }
-    throw std::runtime_error("Node could not be found with ID: " + nodeID);
+    throw std::runtime_error("Node could not be found with ID: " + std::to_string(nodeID));
 }
 
 size_t CircuitBufferWrapper::getNumberOfNodes() const { return circuit_flatbuffer_->nodes()->size(); }
@@ -779,7 +779,7 @@ CircuitObjectWrapper::Node CircuitObjectWrapper::getNodeWithID(uint64_t nodeID) 
             return std::make_unique<NodeObjectWrapper>(node.get());
         }
     }
-    throw std::runtime_error("Node could not be found with ID: " + nodeID);
+    throw std::runtime_error("Node could not be found with ID: " + std::to_string(nodeID));
 }
 
 size_t CircuitObjectWrapper::getNumberOfNodes() const { return circuit_object_->nodes.size(); }
@@ -835,7 +835,7 @@ CircuitObjectWrapper::MutableNode CircuitObjectWrapper::getNodeWithID(uint64_t n
             return NodeObjectWrapper(node.get());
         }
     }
-    throw std::runtime_error("Node could not be found with ID: " + nodeID);
+    throw std::runtime_error("Node could not be found with ID: " + std::to_string(nodeID));
 }
 
 uint64_t CircuitObjectWrapper::getNextID() const {

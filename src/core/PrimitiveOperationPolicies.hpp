@@ -91,7 +91,7 @@ struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Add> {
     static void accumulate(T1& total, const T2& value) { total += value; };
 
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 + val2); }
 };
 template <>
@@ -100,7 +100,7 @@ struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Mul> {
     static void accumulate(T1& total, const T2& value) { total *= value; };
 
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 * val2); }
 };
 template <>
@@ -109,7 +109,7 @@ struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Div> {
     static void accumulate(T1& total, const T2& value) { total /= value; };
 
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 / val2); }
 };
 template <>
@@ -118,7 +118,7 @@ struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Sub> {
     static void accumulate(T1& total, const T2& value) { total -= value; };
 
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return val1 - val2; }
 };
 template <>
@@ -139,49 +139,49 @@ struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Neg> {
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Nand> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return !(val1 & val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Nor> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return !(val1 | val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Xnor> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return !(val1 ^ val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Gt> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 > val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Ge> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 >= val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Lt> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 < val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Le> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 <= val2); }
 };
 template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Eq> {
     template <typename T1, typename T2 = T1,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const T1& val1, const T2& val2) { return (val1 == val2); }
 };
 template <>
@@ -217,7 +217,7 @@ template <>
 struct PrimitiveOperationPolicies<core::ir::PrimitiveOperation::Mux> {
     template <typename T1, typename T2 = T1,
               typename Cond = bool,
-              typename RT = std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
+              typename RT = typename std::conditional<sizeof(T1) >= sizeof(T2), T1, T2>::type>
     static RT apply(const Cond& condition, const T1& val1, const T2& val2) { return (condition ? val1 : val2); }
 };
 

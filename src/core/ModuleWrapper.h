@@ -26,12 +26,13 @@
 #include <iterator>
 #include <span>
 #include <unordered_set>
+#include <unordered_map>
 
 #include "module_generated.h"
 
 namespace fuse::core {
 
-namespace ir = fuse::core::ir;
+// namespace ir = fuse::core::ir;
 
 /*
 ****************************************************************************************************************************************************
@@ -662,7 +663,7 @@ public:
   }
 
   virtual void
-  topologicalTraversal(std::function<void(NodeReadOnly &)> func) const {
+  topologicalTraversal(std::function<void(NodeReadOnly &)> func) const override {
     for (auto it = begin(), e = end(); it != e; ++it) {
       auto node = *it;
       func(node);
@@ -741,7 +742,7 @@ private:
       ++(*this);
       return tmp;
     }
-    
+
     NodeIterator operator+(const uint32_t &offset) const {
       return NodeIterator(iterator_ + offset);
     }
@@ -848,12 +849,12 @@ private:
     virtual void accept(ReadOnlyVisitor& visitor) const override { visitor.visit(*this); }
     virtual void accept(ReadAndWriteVisitor& visitor) override { visitor.visit(*this); }
 
-    virtual void topologicalTraversal(std::function<void(NodeReadOnly&)> func) const {
+    virtual void topologicalTraversal(std::function<void(NodeReadOnly&)> func) const override {
         for (auto it = begin(), e = end(); it != e; ++it) {
             auto node = *it;
             func(node);
         }
-    }  
+    }
 };
 
 /*

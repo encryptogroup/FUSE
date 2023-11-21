@@ -48,7 +48,7 @@ template <core::ir::PrimitiveType T,
           typename AccumulationPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreAccumulation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() > 0);
     // compute accumulated value
     AccumulationType accumulator = inputs[0].As<AccumulationType>();
@@ -59,7 +59,7 @@ void computeAndStoreAccumulation(core::NodeObjectWrapper& node, std::span<const 
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(accumulator));
+    node.setPayload(static_cast<typename Traits::PayloadType>(accumulator));
     node.setConstantType(T);
 }
 
@@ -67,7 +67,7 @@ template <core::ir::PrimitiveType T,
           typename AccumulationPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreInvertedAccumulation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() > 0);
     // compute accumulated value
     AccumulationType accumulator = inputs[0].As<AccumulationType>();
@@ -80,7 +80,7 @@ void computeAndStoreInvertedAccumulation(core::NodeObjectWrapper& node, std::spa
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(accumulator));
+    node.setPayload(static_cast<typename Traits::PayloadType>(accumulator));
     node.setConstantType(T);
 }
 
@@ -88,7 +88,7 @@ template <core::ir::PrimitiveType T,
           typename ComparatorPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreComparisonOperation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() == 2);
     // compute comparison value
     auto comparisonVal = ComparatorPolicy::template apply<AccumulationType>(inputs[0].As<AccumulationType>(), inputs[1].As<AccumulationType>());
@@ -96,7 +96,7 @@ void computeAndStoreComparisonOperation(core::NodeObjectWrapper& node, std::span
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(comparisonVal));
+    node.setPayload(static_cast<typename Traits::PayloadType>(comparisonVal));
     node.setConstantType(T);
 }
 
@@ -104,7 +104,7 @@ template <core::ir::PrimitiveType T,
           typename OperationPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreUnaryOperation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() == 1);
     // compute comparison value
     auto comparisonVal = OperationPolicy::template apply<AccumulationType>(inputs[0].As<AccumulationType>());
@@ -112,7 +112,7 @@ void computeAndStoreUnaryOperation(core::NodeObjectWrapper& node, std::span<cons
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(comparisonVal));
+    node.setPayload(static_cast<typename Traits::PayloadType>(comparisonVal));
     node.setConstantType(T);
 }
 
@@ -121,8 +121,8 @@ template <core::ir::PrimitiveType T,
           core::ir::PrimitiveType Cond = core::ir::PrimitiveType::Bool,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreMuxOperation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
-    using CondType = core::PrimitiveTypeTraits<Cond>::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
+    using CondType = typename core::PrimitiveTypeTraits<Cond>::AccumulationType;
     assert(inputs.size() == 3);
     // compute comparison value
     auto comparisonVal = OperationPolicy::template apply<AccumulationType>(inputs[0].As<CondType>(), inputs[1].As<AccumulationType>(), inputs[2].As<AccumulationType>());
@@ -130,7 +130,7 @@ void computeAndStoreMuxOperation(core::NodeObjectWrapper& node, std::span<const 
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(comparisonVal));
+    node.setPayload(static_cast<typename Traits::PayloadType>(comparisonVal));
     node.setConstantType(T);
 }
 
@@ -138,7 +138,7 @@ template <core::ir::PrimitiveType T,
           typename OperationPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreSplitOperation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() == 1);
     // compute comparison value : in this special case, the output type will be std::bitset<>
     auto bitSet = OperationPolicy::template apply<AccumulationType, Traits::NumBits>(inputs[0].As<AccumulationType>());
@@ -151,14 +151,14 @@ void computeAndStoreSplitOperation(core::NodeObjectWrapper& node, std::span<cons
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     node.setPayload(res);
     long shapeDim = res.size();
-    node.setConstantType(T, std::array<long, 1>{shapeDim});
+    node.setConstantType(T, std::array<int64_t, 1>{shapeDim});
 }
 
 template <core::ir::PrimitiveType T,
           typename OperationPolicy,
           typename Traits = core::PrimitiveTypeTraits<T>>
 void computeAndStoreMergeOperation(core::NodeObjectWrapper& node, std::span<const flexbuffers::Reference> inputs) {
-    using AccumulationType = Traits::AccumulationType;
+    using AccumulationType = typename Traits::AccumulationType;
     assert(inputs.size() > 1);
     std::vector<bool> inputBits;
     size_t numberOfInputs = inputs.size();
@@ -172,7 +172,7 @@ void computeAndStoreMergeOperation(core::NodeObjectWrapper& node, std::span<cons
     node.setInputNodeIDs({});
     node.setPrimitiveOperation(core::ir::PrimitiveOperation::Constant);
     // static cast to highest value s.t. the correct setPayload function can be called
-    node.setPayload(static_cast<Traits::PayloadType>(resVal));
+    node.setPayload(static_cast<typename Traits::PayloadType>(resVal));
     node.setConstantType(T);
 }
 

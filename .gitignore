@@ -112,3 +112,13 @@ MANIFEST
 # env for vscode
 .env
 examples/hycc_circs.zip
+
+# example circuits from hycc - too large
+examples/hycc_circuits/biomatch1k
+examples/hycc_circuits/biomatch4k
+examples/hycc_circuits/cryptonets
+examples/hycc_circuits/gauss
+examples/hycc_circuits/kmeans
+examples/hycc_circuits/mnist
+examples/hycc_circuits/tutorial_addition
+examples/hycc_circuits/tutorial_euclidean_distance

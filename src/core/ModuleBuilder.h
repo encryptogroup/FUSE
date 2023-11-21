@@ -107,7 +107,7 @@ class CircuitBuilder {
 
     size_t addDataType(ir::PrimitiveType primitiveType,
                        ir::SecurityLevel securityLevel = ir::SecurityLevel::Secure,
-                       const std::vector<long> &shape = {},
+                       const std::vector<int64_t> &shape = {},
                        const std::string &data_type_annotations = "");
 
     void addAnnotations(const std::string &annotations);

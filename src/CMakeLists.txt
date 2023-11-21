@@ -38,6 +38,8 @@ add_library(FUSE
         backend/Evaluator.hpp
         backend/DOTBackend.cpp
         backend/BristolFormatBackend.cpp
+        passes/CallStackAnalysis.h
+        passes/CallStackAnalysis.cpp
         passes/DeadNodeEliminator.h
         passes/DeadNodeEliminator.cpp
         passes/NodeSuccessorsAnalysis.h
@@ -47,6 +49,8 @@ add_library(FUSE
         passes/FrequentSubcircuitReplacement.cpp
         passes/InstructionVectorization.cpp
         passes/DepthAnalysis.cpp
+        passes/OperationsAnalysis.h
+        passes/OperationsAnalysis.cpp
         util/ModuleGenerator.h
         util/ModuleGenerator.cpp
         )

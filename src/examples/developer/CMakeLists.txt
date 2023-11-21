@@ -26,16 +26,14 @@ add_executable(fuse_dev_tutorial Tutorial.cpp)
 target_link_libraries(fuse_dev_tutorial PRIVATE
 FUSE
 FUSE_Bristol
-# FUSE_HyCC
-# FUSE_MOTION
 flatbuffers
-${MASON_PACKAGE_zlib_STATIC_LIBS}
+# ${MASON_PACKAGE_zlib_STATIC_LIBS}
 )
 
 target_include_directories(fuse_dev_tutorial PRIVATE
         ${FUSE_FBS_INCLUDE_PREFIX}
         ${FUSE_FLATBUFFERS_INCLUDE_DIR}
-        ${FUSE_GZIP_INCLUDE_DIR})
+        )
 
 set_target_properties(fuse_dev_tutorial
         PROPERTIES

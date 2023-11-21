@@ -47,22 +47,21 @@ set(FUSE_TUTORIAL_DIR "${FUSE_SOURCE_DIR}/examples")
 
 
 option(FUSE_BUILD_TESTS "Build Tests" OFF)
-option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" ON)
+option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" OFF)
 option(FUSE_USE_ADDRESS_SANITIZER "Enable compile and link options for address sanitizer" OFF)
 option(FUSE_BUILD_BRISTOL_FRONTEND "Build Bristol Frontend" ON)
-option(FUSE_BUILD_HyCC_FRONTEND "Build HyCC Frontend" ON)
-option(FUSE_BUILD_MOTION_FRONTEND "Build MOTION Frontend" ON)
-option(FUSE_BUILD_MOTION_BACKEND "Build MOTION Backend" ON)
+option(FUSE_BUILD_HyCC_FRONTEND "Build HyCC Frontend" OFF)
+option(FUSE_BUILD_MOTION_FRONTEND "Build MOTION Frontend" OFF)
+option(FUSE_BUILD_MOTION_BACKEND "Build MOTION Backend" OFF)
 option(FUSE_BUILD_TUTORIALS "Build FUSE Tutorials for Devs" ON)
-option(FUSE_BUILD_SUBGRAPH_OPTIMIZATION "Build Subgraph Optimization" ON)
-
+option(FUSE_BUILD_SUBGRAPH_OPTIMIZATION "Build Subgraph Optimization" OFF)
+option(FUSE_BUILD_GZIP_HPP "Build gzip-hpp, currently not working because the link to mason on aws is not there :(" OFF)
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 # if (FUSE_BUILD_BENCHMARKS)
 # set(CMAKE_BUILD_TYPE Release)
-
 # endif()
 
 # Write built executables and libraries to bin/ and lib/, respectively.
@@ -81,16 +80,18 @@ endif()
 # #################### Add Libaries used inside FUSE #####################
 
 # Add gzip library for compressing files
-message(STATUS "Add gzip library")
+if (FUSE_BUILD_GZIP_HPP)
+    message(STATUS "Add gzip library")
 
-if(NOT EXISTS "${FUSE_GZIP_DIR}/CMakeLists.txt")
-    find_package(Git REQUIRED)
-    message("initialize Git submodule: extern/gzip-hpp")
-    execute_process(COMMAND git submodule update --init extern/gzip-hpp
-        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+    if(NOT EXISTS "${FUSE_GZIP_DIR}/CMakeLists.txt")
+        find_package(Git REQUIRED)
+        message("initialize Git submodule: extern/gzip-hpp")
+        execute_process(COMMAND git submodule update --init extern/gzip-hpp
+            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+    endif()
+    add_subdirectory(${FUSE_GZIP_DIR} EXCLUDE_FROM_ALL)
 endif()
 
-add_subdirectory(${FUSE_GZIP_DIR} EXCLUDE_FROM_ALL)
 
 # Add MOTION if the Backend or Frontend is to be built
 if(FUSE_BUILD_MOTION_BACKEND OR FUSE_BUILD_MOTION_FRONTEND)
@@ -158,6 +159,9 @@ elseif(NOT Flatbuffers_FOUND AND NOT TARGET flatbuffers::flatbuffers)
     endif()
 endif()
 
+# For header-only Boost multiprecision
+find_package(Boost REQUIRED)
+
 # #################### Add subdirectories and link to FUSE target #####################
 
 # Add generated fbs headers
@@ -170,7 +174,7 @@ add_subdirectory(${FUSE_SOURCE_DIR})
 add_dependencies(FUSE FUSE-fbs-headers-generation)
 
 # Link against flatbuffers to already declared target.
-target_link_libraries(FUSE PUBLIC flatbuffers)
+target_link_libraries(FUSE PUBLIC flatbuffers Boost::boost)
 target_include_directories(FUSE PUBLIC ${FUSE_FLATBUFFERS_INCLUDE_DIR} ${FUSE_FBS_INCLUDE_PREFIX})
 
 add_subdirectory(src/frontend)

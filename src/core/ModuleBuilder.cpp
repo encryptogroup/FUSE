@@ -168,7 +168,7 @@ void CircuitBuilder::addAnnotations(const std::string &annotations) {
 
 size_t CircuitBuilder::addDataType(ir::PrimitiveType primitiveType,
                                    ir::SecurityLevel securityLevel,
-                                   const std::vector<long> &shape,
+                                   const std::vector<int64_t> &shape,
                                    const std::string &data_type_annotations) {
     bool serializeShape = !shape.empty();
     bool serializeDataTypeAnnotations = !data_type_annotations.empty();

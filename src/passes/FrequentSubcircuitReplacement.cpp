@@ -31,6 +31,7 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <signal.h>
 #include <vector>
 
 #include "DOTBackend.h"
@@ -52,7 +53,7 @@ uint64_t recursively_create_node(core::CircuitObjectWrapper &circuit, std::vecto
     auto node_iterator = std::find(nodes_to_replace.begin(), nodes_to_replace.end(), cur_node_id);
     if (node_iterator == nodes_to_replace.end()) {
         auto dummy_type = cb.addDataType(core::ir::PrimitiveType::Bool, core::ir::SecurityLevel::Plaintext);
-        auto in_gate = cb.addInputNode({dummy_type});
+        auto in_gate = cb.addInputNode(dummy_type);
         is_input[in_gate] = true;
         return in_gate;
     }
@@ -147,7 +148,7 @@ core::CircuitContext create_circuit_to_call(core::CircuitObjectWrapper &circuit,
         // if not already created, create output gate
         if (subgraph_output.find(node_index) == subgraph_output.end()) {
             auto dummy_type = cb.addDataType(core::ir::PrimitiveType::Bool, core::ir::SecurityLevel::Plaintext);
-            auto out_gate = cb.addOutputNode({dummy_type}, {created_gates[node_id]});
+            auto out_gate = cb.addOutputNode(dummy_type, {created_gates[node_id]});
 
             subgraph_output[node_index] = out_gate;
         }
@@ -163,7 +164,7 @@ core::CircuitContext create_circuit_to_call(core::CircuitObjectWrapper &circuit,
 }
 
 std::vector<uint64_t> find_first_valid_embedding(std::set<uint64_t> already_replaced, const std::string output_filename, std::unordered_map<uint64_t, std::unordered_set<uint64_t>> &nodeSuccessors, std::unordered_map<uint64_t, uint64_t> &nodeDepth) {
-    
+
     // create input file
     std::ifstream inf;
     inf.open(output_filename, std::ios::in);
@@ -171,7 +172,7 @@ std::vector<uint64_t> find_first_valid_embedding(std::set<uint64_t> already_repl
     std::string cur_mapping;
     std::vector<uint64_t> nodes_to_replace;
     while(inf){
-        // get new line 
+        // get new line
         std::getline(inf, cur_mapping);
 
         // terminate
@@ -277,14 +278,14 @@ fuse::core::ModuleContext replaceFrequentSubcircuits(core::CircuitContext &circu
         std::unordered_map<uint64_t, std::unordered_set<uint64_t>> nodeSuccessors = fuse::passes::getNodeSuccessors(circuit);
         std::unordered_map<uint64_t, uint64_t> nodeDepth = fuse::passes::getNodeDepths(circuit);
 
-        // create subgraph 
+        // create subgraph
         output_filename = output_dir + "mappings" + std::to_string(ctr);
         std::map<uint64_t, std::vector<uint64_t>> subgraph_input;
         std::map<uint64_t, fuse::frontend::Identifier> subgraph_output;
         std::map<uint64_t, bool> is_input;
         std::vector<uint64_t> first_embedding = find_first_valid_embedding(already_replaced, output_filename, nodeSuccessors, nodeDepth);
 
-        // optimization: no applicable embedding 
+        // optimization: no applicable embedding
         if (first_embedding.empty()){
             // update report
             report << "Not a single valid embedding for pattern " << pattern_ctr << "/" << count_patterns << std::endl << std::endl;;
@@ -299,7 +300,7 @@ fuse::core::ModuleContext replaceFrequentSubcircuits(core::CircuitContext &circu
         report << "Pattern: \n";
         report << fuse::backend::generateDotCodeFrom(*subcircuitReadOnly);
 
-        // filter embeddings 
+        // filter embeddings
         // check embeding for unallowed dependencies (subcircuit is dependend on its own output)
         report << "Filtering " << count_glasgow << " embeddings" << std::endl;
         std::string filterreportpath = output_dir + "Filterreport.txt";
@@ -316,7 +317,7 @@ fuse::core::ModuleContext replaceFrequentSubcircuits(core::CircuitContext &circu
         int individ_replaced_calls = 0;
         int individ_replaced = 0;
         int emb_ctr = 1;
-        
+
         report << "\n" << "Embedding-STATUS for pattern " << pattern_ctr << "/" << count_patterns << std::endl;
 
         while (std::getline(inf_mapping, cur_mapping)) {
@@ -335,7 +336,7 @@ fuse::core::ModuleContext replaceFrequentSubcircuits(core::CircuitContext &circu
             // get nodes
             nodes_to_replace = fuse::backend::translateMappingToNodevec(cur_mapping);
 
-            // apply node successor analysis 
+            // apply node successor analysis
             nodeSuccessors = fuse::passes::getNodeSuccessors(circuit);
 
             // check again of legality of pattern has changed (otherwise skip)
@@ -358,7 +359,7 @@ fuse::core::ModuleContext replaceFrequentSubcircuits(core::CircuitContext &circu
 
             uint64_t newid = circuit.replaceNodesBySubcircuit(*subcircuitReadOnly, nodes_to_replace, input_mapping, output_mapping, translated_subgraph_output);
 
-            // update nodedepth for newly created node 
+            // update nodedepth for newly created node
             int minDepth = nodeDepth[nodes_to_replace[0]];
             for (auto node : nodes_to_replace) {
                 minDepth = nodeDepth[node] < minDepth ? nodeDepth[node] : minDepth;
@@ -624,7 +625,7 @@ fuse::core::ModuleContext automaticallyReplaceFrequentSubcircuits(fuse::core::Ci
 
     for (int mode = 0; mode < try_modes; mode++) {
 
-        // find next counter 
+        // find next counter
         int nex_ctr = 0;
         std::string test_str = output_dir + "distgraph" + std::to_string(nex_ctr) + ".txt";
         while (fs::exists(test_str)) {

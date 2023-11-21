@@ -96,7 +96,7 @@ CircuitObjectWrapper CircuitContext::getMutableCircuitWrapper() {
 void CircuitContext::packCircuit() {
     if (is_unpacked) {
         is_unpacked = false;
-        circuit_unpacked_data_->input_datatypes;
+        // circuit_unpacked_data_->input_datatypes;
         // Serialize into new flatbuffer.
         flatbuffers::FlatBufferBuilder fbb;
         fbb.Finish(fuse::core::ir::CircuitTable::Pack(fbb, circuit_unpacked_data_.get()));

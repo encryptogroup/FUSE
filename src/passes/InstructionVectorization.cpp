@@ -25,6 +25,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 #include "DOTBackend.h"
 #include "DepthAnalysis.h"
@@ -101,7 +102,7 @@ void vectorizeInstructions(core::CircuitObjectWrapper& circuit, core::ir::Primit
             // remove if distance too large
             std::vector<uint64_t> final_vec;
             for (auto node : depthPair.second) {
-                if (abs(median_depth - nodeDepth[node]) <= maxDistance) {
+                if (std::abs(median_depth - (int64_t) nodeDepth[node]) <= maxDistance) {
                     final_vec.push_back(node);
                 }
             }
