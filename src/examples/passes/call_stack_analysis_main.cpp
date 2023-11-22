@@ -26,17 +26,21 @@
 #include "IR.h"
 #include "CallStackAnalysis.h"
 #include "OperationsAnalysis.h"
+#include "DOTBackend.h"
 
 int main(int argc, char *argv[]) {
     const std::string hyccCirc = "../../examples/hycc_circuits/compiled_to_fuseir/mnist.mfs";
     const std::string output = "../../tests/outputs/callAnalysis.txt";
+    const std::string relu_dot_output = "../../tests/outputs/relu_dot.txt";
     std::ofstream of(output);
+    std::ofstream relu_of(relu_dot_output);
 
     fuse::core::ModuleContext context;
     context.readModuleFromFile(hyccCirc);
     auto mod = context.getModuleBufferWrapper();
-    auto relu = mod.getCircuitWithName("relu");
 
+    auto relu = mod.getCircuitWithName("relu");
+    relu_of << fuse::backend::generateDotCodeFrom(*relu) << std::endl;
 
     std::unordered_map<std::string, std::unordered_map<std::string, int>> res = fuse::passes::analyzeCallStacks(mod);
     std::unordered_map<std::string, std::unordered_map<std::string, int>> ops = fuse::passes::analyzeOperations(mod);

@@ -18,13 +18,11 @@ if (FUSE_BUILD_MOTION_FRONTEND)
             FUSE_MOTION
             FUSE_MOTION_FE
             flatbuffers
-            ${MASON_PACKAGE_zlib_STATIC_LIBS}
             )
 
     target_include_directories(motion_frontend PUBLIC
             ${FUSE_FBS_INCLUDE_PREFIX}
             ${FUSE_FLATBUFFERS_INCLUDE_DIR}
-            ${FUSE_GZIP_INCLUDE_DIR}
     )
 
 

@@ -544,6 +544,7 @@ void NodeObjectWrapper::setConstantType(ir::PrimitiveType primitiveType, std::sp
     node_object_->output_datatypes.push_back(std::move(dt));
 }
 
+void NodeObjectWrapper::setInputNodeID(uint64_t inputNodeID) { node_object_->input_identifiers.push_back(inputNodeID); }
 void NodeObjectWrapper::setInputNodeIDs(std::span<uint64_t> inputNodeIDs) { node_object_->input_identifiers.assign(inputNodeIDs.begin(), inputNodeIDs.end()); }
 void NodeObjectWrapper::setInputOffsets(std::span<uint32_t> inputOffsets) { node_object_->input_offsets.assign(inputOffsets.begin(), inputOffsets.end()); }
 void NodeObjectWrapper::setNumberOfOutputs(uint32_t numberOfOutputs) { node_object_->num_of_outputs = numberOfOutputs; }
@@ -855,6 +856,7 @@ CircuitObjectWrapper::MutableNode CircuitObjectWrapper::addNode() {
     return NodeObjectWrapper(circuit_object_->nodes.back().get());
 }
 
+
 CircuitObjectWrapper::MutableNode CircuitObjectWrapper::addNode(long position) {
     if (position < 0) {
         return addNode();
@@ -864,6 +866,13 @@ CircuitObjectWrapper::MutableNode CircuitObjectWrapper::addNode(long position) {
     auto itPos = circuit_object_->nodes.begin() + position;
     auto newIt = circuit_object_->nodes.insert(itPos, std::move(temp));
     return NodeObjectWrapper(newIt->get());
+}
+
+CircuitObjectWrapper::MutableNode CircuitObjectWrapper::addNode(long position, fuse::core::ir::PrimitiveOperation op, std::span<uint64_t> input_identifiers) {
+    CircuitObjectWrapper::MutableNode node = addNode(position);
+    node.setPrimitiveOperation(op);
+    node.setInputNodeIDs(input_identifiers);
+    return node;
 }
 
 /**

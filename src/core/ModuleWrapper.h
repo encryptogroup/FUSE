@@ -410,6 +410,7 @@ private:
 public:
   explicit NodeObjectWrapper(ir::NodeTableT *node_object)
       : node_object_(node_object) {}
+  ir::NodeTableT* _get() { return node_object_; }
 
   virtual bool isConstantNode() const override;
   virtual bool isNodeWithCustomOp() const override;
@@ -479,8 +480,10 @@ public:
   void setStringValueForAttribute(const std::string &attribute,
                                   const std::string &value);
 
+  void setInputNodeID(uint64_t inputNodeID);
   void setInputNodeIDs(std::span<uint64_t> inputNodeIDs);
   void setInputOffsets(std::span<uint32_t> inputOffsets);
+  void setInputDataTypes(std::span<DataType> inputDatatypes);
   void setNumberOfOutputs(uint32_t numberOfOutputs);
   void replaceInputBy(uint64_t prevInputID, uint64_t newInputID,
                       uint32_t prevOffset = 0, uint32_t newOffset = 0);
@@ -514,6 +517,8 @@ public:
   virtual void accept(ReadAndWriteVisitor &visitor) override {
     visitor.visit(*this);
   }
+
+
 };
 
 /*
@@ -779,6 +784,8 @@ private:
    public:
     explicit CircuitObjectWrapper(ir::CircuitTableT* circuit_object) : circuit_object_(circuit_object) {}
 
+    ir::CircuitTableT* _get() { return circuit_object_; }
+
     virtual std::string getName() const override;
     virtual std::string getCircuitAnnotations() const override;
 
@@ -827,6 +834,7 @@ private:
      * @return MutableNode a mutable wrapper to the newly added node for further mutation.
      */
     MutableNode addNode(long position);
+    MutableNode addNode(long position, fuse::core::ir::PrimitiveOperation op, std::span<uint64_t> input_identifiers);
     uint64_t replaceNodesBySubcircuit(CircuitReadOnly& subcircuit,
                                   // nodees that need to be deleted afterwards
                                   std::span<uint64_t> nodesToReplace,

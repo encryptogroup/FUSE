@@ -28,7 +28,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <gzip/compress.hpp>
 #include <regex>
 
 #include "common/common.h"

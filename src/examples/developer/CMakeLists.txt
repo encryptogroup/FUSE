@@ -27,7 +27,6 @@ target_link_libraries(fuse_dev_tutorial PRIVATE
 FUSE
 FUSE_Bristol
 flatbuffers
-# ${MASON_PACKAGE_zlib_STATIC_LIBS}
 )
 
 target_include_directories(fuse_dev_tutorial PRIVATE

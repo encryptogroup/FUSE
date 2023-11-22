@@ -28,7 +28,6 @@
 #include <climits>
 #include <filesystem>
 #include <fstream>
-#include <gzip/compress.hpp>
 #include <random>
 #include <regex>
 #include <string>

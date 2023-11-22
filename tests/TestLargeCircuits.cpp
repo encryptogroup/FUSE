@@ -24,7 +24,6 @@
 
 #include <chrono>
 #include <filesystem>
-#include <gzip/compress.hpp>
 #include <iostream>
 
 #include "ConstantFolder.h"

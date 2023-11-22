@@ -24,7 +24,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <gzip/compress.hpp>
 #include <regex>
 
 #include "BristolFrontend.h"

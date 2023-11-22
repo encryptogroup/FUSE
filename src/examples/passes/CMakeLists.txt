@@ -7,13 +7,12 @@ if (FUSE_BUILD_SUBGRAPH_OPTIMIZATION)
     FUSE_Bristol
     FUSE_DistGraph
     flatbuffers
-    ${MASON_PACKAGE_zlib_STATIC_LIBS}
     )
 
     target_include_directories(sub_pass PRIVATE
     ${FUSE_FBS_INCLUDE_PREFIX}
     ${FUSE_FLATBUFFERS_INCLUDE_DIR}
-    ${FUSE_GZIP_INCLUDE_DIR})
+    )
 
     set_target_properties(sub_pass
     PROPERTIES

@@ -46,7 +46,7 @@ set(FUSE_GZIP_INCLUDE_DIR "${FUSE_EXTERN_DIR}/gzip-hpp/include")
 set(FUSE_TUTORIAL_DIR "${FUSE_SOURCE_DIR}/examples")
 
 
-option(FUSE_BUILD_TESTS "Build Tests" OFF)
+option(FUSE_BUILD_TESTS "Build Tests" ON)
 option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" OFF)
 option(FUSE_USE_ADDRESS_SANITIZER "Enable compile and link options for address sanitizer" OFF)
 option(FUSE_BUILD_BRISTOL_FRONTEND "Build Bristol Frontend" ON)
@@ -203,18 +203,22 @@ endif(FUSE_BUILD_TESTS)
 
 # Add google benchmarking library
 if(FUSE_BUILD_BENCHMARKS)
-    if(NOT EXISTS "${FUSE_BENCHMARK_SRC_DIR}/CMakeLists.txt")
-        find_package(Git REQUIRED)
-        message("initialize Git submodule: extern/benchmark")
-        execute_process(COMMAND git submodule update --init extern/benchmark
-            WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
-    endif()
+    if (FUSE_BUILD_GZIP_HPP)
+        if(NOT EXISTS "${FUSE_BENCHMARK_SRC_DIR}/CMakeLists.txt")
+            find_package(Git REQUIRED)
+            message("initialize Git submodule: extern/benchmark")
+            execute_process(COMMAND git submodule update --init extern/benchmark
+                WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}")
+        endif()
 
-    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Don't build tests for the benchmark library")
-    set(BENCHMARK_ENABLE_INSTALL ON CACHE BOOL "Don't install the benchmark library")
+        set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Don't build tests for the benchmark library")
+        set(BENCHMARK_ENABLE_INSTALL ON CACHE BOOL "Don't install the benchmark library")
 
-    add_subdirectory(${FUSE_BENCHMARK_SRC_DIR} EXCLUDE_FROM_ALL)
-    add_subdirectory(${FUSE_BENCHMARKS_DIR})
+        add_subdirectory(${FUSE_BENCHMARK_SRC_DIR} EXCLUDE_FROM_ALL)
+        add_subdirectory(${FUSE_BENCHMARKS_DIR})
+    else()
+        message(SEND_ERROR "You are trying to build FUSE benchmarks but have GZip disabled, this will not work. Hence, benchmark building is skipped.")
+    endif(FUSE_BUILD_GZIP_HPP)
 endif(FUSE_BUILD_BENCHMARKS)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

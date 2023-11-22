@@ -21,42 +21,86 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_executable(fusetest
-        # TestWrappers.cpp
-        # TestInterpreter.cpp
-        #TestBristolFrontend.cpp
-        # TestHyCCFrontend.cpp
-        #TestDOTBackend.cpp
-        # TestMOTIONBackend.cpp
-        #TestDeadNodeOptimization.cpp
-        #TestConstantFolding.cpp
-        TestFrequentSubcircuitReplacement.cpp
-        TestGraphBackend.cpp
-        TestDepthAnalysis.cpp
-        #TestLargeCircuits.cpp
-        TestInstructionVectorization.cpp
-        #TestMOTIONFrontend.cpp
-        )
+########################### Define files, link libaries and include directories ###########################
 
+# "barebone" definition
+set(FUSE_TEST_CPP
+    # TestWrappers.cpp
+    # TestInterpreter.cpp
+    # TestDeadNodeOptimization.cpp
+    # TestConstantFolding.cpp
+    # TestDepthAnalysis.cpp
+    # TestLargeCircuits.cpp
+    # TestInstructionVectorization.cpp
+    TestMnistCirc.cpp
+    )
+set (FUSE_TEST_LIBS
+    FUSE
+    FUSE_Bristol
+    gtest_main
+    flatbuffers)
+set (FUSE_TEST_INCLUDE_DIRS
+    ${FUSE_FBS_INCLUDE_PREFIX}
+    ${FUSE_FLATBUFFERS_INCLUDE_DIR})
 
-target_link_libraries(fusetest PUBLIC
-        FUSE
-        # FUSE_HyCC
-        FUSE_Bristol
-        #FUSE_MOTION
-        #FUSE_MOTION_FE
-        FUSE_DistGraph
-        gtest_main
-        flatbuffers
-        ${MASON_PACKAGE_zlib_STATIC_LIBS}
-        )
-
-        target_compile_features(fusetest PUBLIC cxx_std_20)
-
-target_include_directories(fusetest PUBLIC
-        ${FUSE_FBS_INCLUDE_PREFIX}
-        ${FUSE_FLATBUFFERS_INCLUDE_DIR}
+# dependencies on gzip: Bristol frontend
+if (FUSE_BUILD_GZIP_HPP)
+    set (FUSE_TEST_CPP
+        ${FUSE_TEST_CPP}
+        TestBristolFrontend.cpp)
+    set (FUSE_TEST_INCLUDE_DIRS
+        ${FUSE_TEST_INCLUDE_DIRS}
         ${FUSE_GZIP_INCLUDE_DIR})
+    set (FUSE_TEST_LIBS
+        ${FUSE_TEST_LIBS}
+        ${MASON_PACKAGE_zlib_STATIC_LIBS})
+endif(FUSE_BUILD_GZIP_HPP)
+
+# dependencies on MOTION: tests for frontend and backend
+if (FUSE_BUILD_MOTION_BACKEND OR FUSE_BUILD_MOTION_FRONTEND)
+    set (FUSE_TEST_CPP
+        ${FUSE_TEST_CPP}
+        TestMOTIONFrontend.cpp
+        TestMOTIONBackend.cpp)
+    set (FUSE_TEST_LIBS
+        ${FUSE_TEST_LIBS}
+        FUSE_MOTION
+        FUSE_MOTION_FE)
+endif(FUSE_BUILD_MOTION_BACKEND OR FUSE_BUILD_MOTION_FRONTEND)
+
+# dependencies on HyCC: tests for frontend
+if (FUSE_BUILD_HyCC_FRONTEND)
+    set (FUSE_TEST_CPP
+        ${FUSE_TEST_CPP}
+        TestDOTBackend.cpp
+        TestHyCCFrontend.cpp)
+    set (FUSE_TEST_LIBS
+        ${FUSE_TEST_LIBS}
+        FUSE_HyCC)
+endif(FUSE_BUILD_HyCC_FRONTEND)
+
+# dependencies on glasgow-subgraph-solver and distgraph: tests for subcircuit replacement pass
+if (FUSE_BUILD_SUBGRAPH_OPTIMIZATION)
+    set (FUSE_TEST_CPP
+        ${FUSE_TEST_CPP}
+        TestFrequentSubcircuitReplacement.cpp
+        TestGraphBackend.cpp)
+    set (FUSE_TEST_LIBS
+        ${FUSE_TEST_LIBS}
+        FUSE_DistGraph)
+endif(FUSE_BUILD_SUBGRAPH_OPTIMIZATION)
+
+###
+
+########################### Define target etc. ###########################
+
+add_executable(fusetest  ${FUSE_TEST_CPP})
+
+target_link_libraries(fusetest PUBLIC ${FUSE_TEST_LIBS})
+
+target_compile_features(fusetest PUBLIC cxx_std_20)
+
+target_include_directories(fusetest PUBLIC ${FUSE_TEST_INCLUDE_DIRS})
 
 set_target_properties(fusetest
         PROPERTIES
