@@ -1,5 +1,5 @@
 message("building examples")
 add_subdirectory(developer)
-add_subdirectory(build_ml_circ)
+add_subdirectory(mnist_circ)
 add_subdirectory(motion_frontend)
 add_subdirectory(passes)

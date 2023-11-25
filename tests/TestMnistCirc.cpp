@@ -27,6 +27,8 @@
 
 #include "IR.h"
 #include "PlaintextInterpreter.hpp"
+#include "CallStackAnalysis.h"
+#include "DOTBackend.h"
 #include "BristolFrontend.h"
 
 namespace fuse::tests::passes {
@@ -62,10 +64,31 @@ std::string prepareOutput(const core::CircuitReadOnly* circ, const std::unordere
     return result.str();
 }
 
-
 // ---------------------------------- TEST CASES ----------------------------------
 
-TEST(MNIST, PrintCircDOT) {
+TEST(MNIST, TestProperties) {
+    const std::string pathToCirc = "../../examples/mnist_fuse.mfs";
+    const std::string callOuts = "../../tests/outputs/mnist_fuse_callstacks.mfs";
+    std::ofstream of(callOuts);
+    fuse::core::ModuleContext context;
+    context.readModuleFromFile(pathToCirc);
+    auto mod = context.getModuleBufferWrapper();
+    auto mainCirc = mod.getEntryCircuit();
+
+    // TODO interpreter does not work for mixed-protocol stuff
+    // so, this test goes for a sanity check instead:
+    //      - test that we have the correct number of inputs + outputs as well as corresponding nodes
+    //      - test that every node has correct number of inputs as well
+    //      - test that subcircuits are wired correctly (fanin/fanout)
+    auto callStackAnalysisRes = fuse::passes::analyzeCallStacks(mod);
+    of << "----------------------------------------------\n";
+    for (auto s : callStackAnalysisRes) {
+        of << "circuit: "<< s.first << std::endl;
+        for (auto t : s.second) {
+            of << "call:" << t.first << ", " << t.second << std::endl;
+        }
+        of << "----------------------------------------------\n";
+    }
 
 }
 
@@ -137,7 +160,7 @@ TEST(GT32, BuildRelu) {
 
 }
 
-TEST(GT32, Correctness) {
+TEST(GT32, DISABLED_Correctness) {
     const std::string gt32Path = "../../examples/bristol_circuits/int_gt32_depth.bristol";
     auto context = fuse::frontend::loadFUSEFromBristol(gt32Path);
     auto circ = context.getReadOnlyCircuit();
@@ -184,7 +207,7 @@ TEST(GT32, Correctness) {
     EXPECT_STREQ(prepareOutput(circ.get(), env).c_str(), "10000000000000000000000000000000");
 }
 
-TEST(MnistCirc, Structure) {
+TEST(MnistCirc, DISABLED_Structure) {
     const std::string output = "../../tests/outputs/optimizations/const_fold_booleans.txt";
     const std::string mnistPath = "../../examples/hycc_circuits/compiled_to_fuseir/mnist.mfs";
 

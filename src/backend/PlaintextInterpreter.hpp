@@ -210,12 +210,12 @@ void PlaintextInterpreter<value_type>::evaluate(const core::ModuleReadOnly& modu
     // visit entry circuit with reference to this module
     // so that calls to subcircuits can be resolved
     auto entryCircuit = module.getEntryCircuit();
-    evaluate(entryCircuit, inputMappings, module);
+    evaluate(*entryCircuit, inputMappings, module);
 }
 
 template <typename value_type>
 void PlaintextInterpreter<value_type>::evaluate(const core::CircuitReadOnly& circuit, std::unordered_map<Identifier, value_type>& environment, const core::ModuleReadOnly& parentModule) {
-    circuit.topologicalTraversal([=, this, &environment](core::NodeReadOnly& node) { this->evaluate(node, environment, parentModule); });
+    circuit.topologicalTraversal([=, this, &environment, &parentModule](core::NodeReadOnly& node) { this->evaluate(node, environment, parentModule); });
 }
 
 template <typename value_type>
@@ -347,7 +347,7 @@ void PlaintextInterpreter<value_type>::evaluate(const core::NodeReadOnly& node, 
             }
 
             // evaluate subcircuit with the same inputs that the node itself received
-            evaluate(subcircuit, subcircuitInputs, parentModule);
+            evaluate(*subcircuit, subcircuitInputs, parentModule);
 
             // after evaluation, get circuit output and save them in this environment as well
             // to do this: translate subcircuit output ID to node output ID
