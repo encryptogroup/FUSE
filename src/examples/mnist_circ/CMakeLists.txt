@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_executable(fuse_ml_circ build_ml_circ.cpp)
+add_executable(fuse_ml_circ build_mnist.hpp build_ml_circ.cpp)
 
 target_link_libraries(fuse_ml_circ PRIVATE
 FUSE

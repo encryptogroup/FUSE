@@ -41,7 +41,8 @@ set (FUSE_TEST_LIBS
     flatbuffers)
 set (FUSE_TEST_INCLUDE_DIRS
     ${FUSE_FBS_INCLUDE_PREFIX}
-    ${FUSE_FLATBUFFERS_INCLUDE_DIR})
+    ${FUSE_FLATBUFFERS_INCLUDE_DIR}
+    ${FUSE_TUTORIAL_DIR}/mnist_circ)
 
 # dependencies on gzip: Bristol frontend
 if (FUSE_BUILD_GZIP_HPP)
