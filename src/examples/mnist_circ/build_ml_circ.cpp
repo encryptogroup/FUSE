@@ -24,19 +24,21 @@
 This file shows some example usages of FUSE for developers who want to extend
 this framework with more passes, frontend languages or backend languages.
  */
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "build_mnist.hpp"
 
 int main() {
-    // const std::string dotPath = "../../tests/outputs/mnistDot.txt";
-
     auto modBuilder = generateSecureMLNN();
-    fuse::core::ModuleContext modContext (modBuilder);
-    modContext.writeModuleToFile("../../examples/mnist_fuse.mfs");
+    const std::string mixed_path = "../../examples/mnist_fuse.mfs";
+    fuse::core::ModuleContext modContext(modBuilder);
+    modContext.writeModuleToFile(mixed_path);
+    std::cout << "Created mixed arithmetic + bool mnist circuit at " << mixed_path << std::endl;
 
     auto modBuilderArith = generateArithmeticSecureMLNN();
-    fuse::core::ModuleContext modContextArith (modBuilderArith);
-    modContextArith.writeModuleToFile("../../examples/mnist_arith_only.mfs");
+    const std::string arith_only_path = "../../examples/mnist_arith_only.mfs";
+    fuse::core::ModuleContext modContextArith(modBuilderArith);
+    modContextArith.writeModuleToFile(arith_only_path);
+    std::cout << "Created arithmetic-only (with singular \"<\" gate) mnist circuit at " << arith_only_path << std::endl;
 }
