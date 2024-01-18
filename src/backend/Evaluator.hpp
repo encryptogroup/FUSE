@@ -267,14 +267,19 @@ namespace fuse::backend::experimental {
             [=, &parentModule, &environment](const core::NodeReadOnly &node) {
                 if (node.isSubcircuitNode()) {
                     // evaluateCall:
-                    auto calleeCirc = parentModule.getCircuitWithName(node.getSubCircuitName());
-                    std::unordered_map<Identifier, std::vector<std::any>> calleeEnv;
-                    std::vector<std::any> inputs = environment.at(node.getNodeID());
-                    auto numInputs = calleeCirc->getNumberOfInputs();
-                    assert(inputs.size() == numInputs);
-                    for (int i = 0; i < numInputs; ++i) {
+                    auto subcircName = node.getSubCircuitName();
+                    auto calleeCirc = parentModule.getCircuitWithName(subcircName);
+                    auto inputVals = node.getInputNodeIDs();
+                    std::vector<std::any> inputs;
+                    for (auto in : inputVals) {
+                        inputs.push_back(environment.at(in));
+                    }
+                    std::unordered_map<Identifier, std::vector<std::any>> calleeEnv{};
+                    auto calleeInputIDs = calleeCirc->getInputNodeIDs();
+                    assert(inputs.size() == calleeInputIDs.size());
+                    for (int i = 0; i < inputs.size(); ++i) {
                         // don't ask me but this should work (hopefully)
-                        calleeEnv[calleeCirc->getInputNodeIDs()[i]].push_back(inputs.at(i));
+                        calleeEnv[calleeInputIDs[i]].push_back(inputs.at(i));
                     }
                     // evaluate subcircuit
                     evaluate(*calleeCirc.get(), parentModule, calleeEnv);

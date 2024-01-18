@@ -32,7 +32,8 @@ set(FUSE_TEST_CPP
     # TestDepthAnalysis.cpp
     # TestLargeCircuits.cpp
     # TestInstructionVectorization.cpp
-    TestMnistCirc.cpp
+    TestDOTBackend.cpp
+    # TestMnistCirc.cpp
     )
 set (FUSE_TEST_LIBS
     FUSE
