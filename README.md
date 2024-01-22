@@ -32,11 +32,14 @@ The design of FUSE is presented in this [paper](https://eprint.iacr.org/2023/563
 * `benchmarks`: Contains source code for the benchmarks in our paper
 
 ## Setup
-TL;DR -- Install flatbuffers locally, then compile FUSE
+TL;DR -- Install flatbuffers locally, then compile FUSE (this might take a bit):
 ```
-python3 setup.py -sb
+python3 setup.py -sb -j 8
 ```
-Please install the project dependencies and HyCC frontend dependencies beforehand.
+Please install the project dependencies and HyCC frontend dependencies beforehand. If your system uses `apt-get`, you can also use
+```
+python3 setup.py -d
+```
 
 ### Project Dependencies
 To build FUSE successfully, you will need the following the packages:

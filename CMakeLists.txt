@@ -47,7 +47,7 @@ set(FUSE_TUTORIAL_DIR "${FUSE_SOURCE_DIR}/examples")
 
 
 option(FUSE_BUILD_TESTS "Build Tests" ON)
-option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" OFF)
+option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" ON)
 option(FUSE_USE_ADDRESS_SANITIZER "Enable compile and link options for address sanitizer" OFF)
 option(FUSE_BUILD_BRISTOL_FRONTEND "Build Bristol Frontend" ON)
 option(FUSE_BUILD_HyCC_FRONTEND "Build HyCC Frontend" OFF)
@@ -55,7 +55,7 @@ option(FUSE_BUILD_MOTION_FRONTEND "Build MOTION Frontend" OFF)
 option(FUSE_BUILD_MOTION_BACKEND "Build MOTION Backend" OFF)
 option(FUSE_BUILD_TUTORIALS "Build FUSE Tutorials for Devs" ON)
 option(FUSE_BUILD_SUBGRAPH_OPTIMIZATION "Build Subgraph Optimization" OFF)
-option(FUSE_BUILD_GZIP_HPP "Build gzip-hpp, currently not working because the link to mason on aws is not there :(" OFF)
+option(FUSE_BUILD_GZIP_HPP "Build gzip-hpp, currently not working on Mac with ARM because the link to AWS mason binary is broken" OFF)
 
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
