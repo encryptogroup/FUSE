@@ -25,6 +25,7 @@
 
 // This includes the top-level objects for FUSE IR: ModuleContext and CircuitContext
 #include "IR.h"
+#include "ModuleGenerator.h"
 // prints DOT code of your FUSE IR
 #include "DOTBackend.h"
 // Here include your own analysis and/or transformation passes
@@ -32,43 +33,26 @@
 // (1) An analysis that returns the overall occurrence of any operation in a circuit
 #include "OperationsAnalysis.h"
 // (2) an analysis that returns for every node on which depth it is w.r.t to nodes of the same operation
-#include "DepthAnalysis.h"
 
 int main(int argc, char *argv[])
 {
-    const std::string path_to_circ_to_analyze = "../../examples/hycc_circuits/compiled_to_fuseir/mnist.mfs";
-    // make sure that you have a
-    const std::string output = "../../tests/outputs/callAnalysis.txt";
-    const std::string relu_dot_output = "../../tests/outputs/relu_dot.txt";
-    std::ofstream of(output);
-    std::ofstream relu_of(relu_dot_output);
+    // put path to circuit/module here if you want to load it
+    // otherwise call the function that returns a ModuleContext or CircuitContext for self generated stuff
+    fuse::core::CircuitContext ctx = fuse::util::generateCircuitWithNumberOfNodes(1000);
+    fuse::core::CircuitBufferWrapper circ = ctx.getCircuitBufferWrapper();
 
-    fuse::core::ModuleContext context;
-    context.readModuleFromFile(hyccCirc);
-    auto mod = context.getModuleBufferWrapper();
+    // make sure the directory tests/outputs exists, otherwise nothing will happen here
+    const std::string analysis_output = "../../tests/outputs/callAnalysis.txt";
+    const std::string dot_output = "../../tests/outputs/dot.txt";
+    std::ofstream of(analysis_output);
+    std::ofstream dot_of(dot_output);
 
-    auto relu = mod.getCircuitWithName("relu");
-    relu_of << fuse::backend::generateDotCodeFrom(*relu) << std::endl;
+    dot_of << fuse::backend::generateDotCodeFrom(circ) << std::endl;
 
-    std::unordered_map<std::string, std::unordered_map<std::string, int>> ops = fuse::passes::analyzeOperations(mod);
+    std::unordered_map<std::string, int> ops = fuse::passes::analyzeOperations(circ);
 
-    for (const auto &pair : res)
+    for (const auto &pair : ops)
     {
-        of << "circuit: " << pair.first; // pair.first is the current circuit
-        of << "\n\t[operations]: ";
-        for (const auto &op : ops.at(pair.first))
-        {
-            of << "\n\t\t";
-            of << op.first << " : " << op.second << " ; ";
-        }
-        of << "\n\t[callees]: ";
-        for (const auto &callee : pair.second)
-        {
-            of << "\n\t\t";
-            of << callee.first << " : " << callee.second << " ; ";
-        }
-        of << "\n\n";
+        of << "Operation: [" << pair.first << "] --- Occurence: " << pair.second << " times" << std::endl;
     }
-
-    of.flush();
 }

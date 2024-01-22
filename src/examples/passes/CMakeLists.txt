@@ -69,6 +69,7 @@ add_executable(new_pass new_pass.cpp)
 
 target_link_libraries(new_pass PRIVATE
     FUSE
+    FUSE_Bristol
 )
 
 set_target_properties(new_pass

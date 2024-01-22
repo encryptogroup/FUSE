@@ -47,7 +47,7 @@ set(FUSE_TUTORIAL_DIR "${FUSE_SOURCE_DIR}/examples")
 
 
 option(FUSE_BUILD_TESTS "Build Tests" ON)
-option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" ON)
+option(FUSE_BUILD_BENCHMARKS "Build Benchmarks" OFF)
 option(FUSE_USE_ADDRESS_SANITIZER "Enable compile and link options for address sanitizer" OFF)
 option(FUSE_BUILD_BRISTOL_FRONTEND "Build Bristol Frontend" ON)
 option(FUSE_BUILD_HyCC_FRONTEND "Build HyCC Frontend" OFF)
